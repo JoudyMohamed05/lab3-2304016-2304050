@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="auth">
+  <div class="card">
+    <h1>Create account</h1>
+    <p class="subtitle">Sign up to manage the library</p>
+    <p class="note"><span class="req">*</span> required field</p>
+
+    <% if (errors.length > 0) { %>
+      <div class="errors">
+        <ul>
+          <% errors.forEach(function(e) { %>
+            <li><%= e %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+
+    <form method="POST" action="/register" novalidate>
+      <label for="name">Name <span class="req">*</span></label>
+      <input type="text" id="name" name="name" value="<%= values.name || '' %>">
+
+      <label for="email">Email <span class="req">*</span></label>
+      <input type="email" id="email" name="email" value="<%= values.email || '' %>">
+
+      <label for="password">Password <span class="req">*</span></label>
+      <div class="pw-wrap">
+        <input type="password" id="password" name="password">
+        <button type="button" class="toggle-pw" data-target="password" aria-label="Show password">
+          <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+
+      <label for="confirm_password">Confirm password <span class="req">*</span></label>
+      <div class="pw-wrap">
+        <input type="password" id="confirm_password" name="confirm_password">
+        <button type="button" class="toggle-pw" data-target="confirm_password" aria-label="Show password">
+          <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+
+      <button type="submit" class="submit">Register</button>
+    </form>
+
+    <p class="footer-text">Already have an account? <a href="/login">Login</a></p>
+  </div>
+
+  <script>
+    document.querySelectorAll('.toggle-pw').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var input = document.getElementById(btn.dataset.target);
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.querySelector('.eye').style.display = show ? 'none' : 'block';
+        btn.querySelector('.eye-off').style.display = show ? 'block' : 'none';
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
+  </script>
+  <script src="/validate.js"></script>
+</body>
+</html>

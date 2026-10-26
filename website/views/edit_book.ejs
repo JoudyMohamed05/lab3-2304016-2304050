@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Edit book</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<%- include("partials/nav") %>
+<main class="container">
+<h1>Edit book #<%= book.book_id %></h1>
+<form method="POST" action="/books/<%= book.book_id %>/edit" enctype="multipart/form-data">
+  <input name="title" value="<%= book.title %>" required>
+  <input name="price" type="number" step="0.01" min="0" value="<%= book.price %>" required>
+  <select name="author_id">
+    <% authors.forEach(a => { %>
+      <option value="<%= a.author_id %>" <%= a.author_id === book.author_id ? 'selected' : '' %>><%= a.author_id %> - <%= a.name %></option>
+    <% }) %>
+  </select>
+  <% if (book.image) { %><img src="/uploads/<%= book.image %>"><% } %>
+  <input type="file" name="image" accept="image/*">
+  <button>Save</button>
+</form>
+<p><a href="/">Back</a></p>
+</main>
+</body>
+</html>

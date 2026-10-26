@@ -1,0 +1,71 @@
+Problem 1 - Answers
+Students: Joudy Mohamed Aly (2304050), Raneem Ahmed Ragab (2304016)
+
+(problem1_DDL.sql and problem1_DML.sql were run first, then the following in: mysql -u root -p company)
+
+======================================================================
+Q1.1  Insert a DEPARTMENT row that references an EMPLOYEE, then delete that employee
+======================================================================
+SQL:
+  INSERT INTO department (Dnumber, Dname, mgr_ssn, mgr_start_date)
+  VALUES (4, 'Marketing', '444444444', '2026-01-01');
+
+  DELETE FROM employee WHERE ssn = '444444444';
+
+Output:
+  mysql> INSERT INTO department (Dnumber, Dname, mgr_ssn, mgr_start_date) VALUES (4, 'Marketing', '444444444', '2026-01-01');
+  Query OK, 1 row affected (0.01 sec)
+
+  mysql> DELETE FROM employee WHERE ssn = '444444444';
+  ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`company`.`department`, CONSTRAINT `fk_dept_mgr` FOREIGN KEY (`mgr_ssn`) REFERENCES `employee` (`ssn`))
+
+What happens: the INSERT succeeds because employee 444444444 exists. The DELETE
+is rejected because that employee is the parent row of department 4 (its manager).
+MySQL protects referential integrity: a referenced row cannot be deleted while a
+child row still points to it. We must first change or delete the department row.
+
+======================================================================
+Q1.2  Insert a PROJECT that references a DEPARTMENT that does not exist yet
+======================================================================
+SQL:
+  INSERT INTO project (Pnumber, Pname, Plocation, Dno)
+  VALUES (99, 'ProjectX2', 'Cairo', 77);
+
+Output:
+  ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`project`, CONSTRAINT `fk_proj_dept` FOREIGN KEY (`Dno`) REFERENCES `department` (`Dnumber`))
+
+What happens: department 77 does not exist, so MySQL rejects the insert. The
+department must be inserted first, then the project that references it.
+
+======================================================================
+Q1.3  mgr_ssn and Dno are both NOT NULL: how to insert the first row?
+======================================================================
+Problem: EMPLOYEE.Dno needs an existing department and DEPARTMENT.mgr_ssn needs an
+existing employee (circular reference). Whichever row is inserted first is
+rejected. MySQL has no deferred constraints.
+
+Step 1 - inserting the department first fails (the employee does not exist yet):
+  INSERT INTO department (Dnumber, Dname, mgr_ssn, mgr_start_date)
+  VALUES (5, 'Finance', '555555555', '2026-01-01');
+
+  ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`department`, CONSTRAINT `fk_dept_mgr` FOREIGN KEY (`mgr_ssn`) REFERENCES `employee` (`ssn`))
+
+Step 2 - solution: temporarily disable the foreign key check, insert both rows,
+then enable it again:
+  SET FOREIGN_KEY_CHECKS = 0;
+  Query OK, 0 rows affected (0.00 sec)
+
+  INSERT INTO department (Dnumber, Dname, mgr_ssn, mgr_start_date)
+  VALUES (5, 'Finance', '555555555', '2026-01-01');
+  Query OK, 1 row affected (0.00 sec)
+
+  INSERT INTO employee (ssn, fname, lname, bdate, address, gender, salary, Dno)
+  VALUES ('555555555', 'Test', 'Manager', '1992-05-05', 'Alex', 'M', 10000, 5);
+  Query OK, 1 row affected (0.00 sec)
+
+  SET FOREIGN_KEY_CHECKS = 1;
+  Query OK, 0 rows affected (0.00 sec)
+
+Other solution: keep one of the two columns nullable (this is what our DDL and
+DML do): insert the department with mgr_ssn = NULL, insert the employees, then
+UPDATE the department to set mgr_ssn.

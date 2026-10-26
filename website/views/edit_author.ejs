@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Edit author</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<%- include("partials/nav") %>
+<main class="container">
+<h1>Edit author #<%= author.author_id %></h1>
+<form method="POST" action="/authors/<%= author.author_id %>/edit" enctype="multipart/form-data">
+  <input name="name" value="<%= author.name %>" required>
+  <input name="country" value="<%= author.country %>">
+  <% if (author.image) { %><img src="/uploads/<%= author.image %>"><% } %>
+  <input type="file" name="image" accept="image/*">
+  <button>Save</button>
+</form>
+<p><a href="/">Back</a></p>
+</main>
+</body>
+</html>

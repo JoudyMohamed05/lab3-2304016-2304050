@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Library</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<%- include("partials/nav") %>
+<main class="container">
+<h1>Library</h1>
+
+<h2>Authors</h2>
+<table>
+  <tr><th>author_id</th><th>Photo</th><th>Name</th><th>Country</th><th>Actions</th></tr>
+  <% authors.forEach(a => { %>
+  <tr>
+    <td><%= a.author_id %></td>
+    <td><% if (a.image) { %><img src="/uploads/<%= a.image %>"><% } %></td>
+    <td><%= a.name %></td>
+    <td><%= a.country %></td>
+    <td>
+      <a href="/authors/<%= a.author_id %>/edit">Edit</a>
+      <form class="inline" method="POST" action="/authors/<%= a.author_id %>/delete"
+            onsubmit="return confirm('Delete this author and ALL their books?')">
+        <button>Delete</button>
+      </form>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+
+<fieldset>
+  <legend>Add an author</legend>
+  <form method="POST" action="/authors/add" enctype="multipart/form-data">
+    <input name="name" placeholder="Name" required>
+    <input name="country" placeholder="Country">
+    <input type="file" name="image" accept="image/*">
+    <button>Add author</button>
+  </form>
+</fieldset>
+
+<h2>Books</h2>
+<table>
+  <tr><th>book_id</th><th>Cover</th><th>Title</th><th>Price</th><th>author_id</th><th>Actions</th></tr>
+  <% books.forEach(b => { %>
+  <tr>
+    <td><%= b.book_id %></td>
+    <td><% if (b.image) { %><img src="/uploads/<%= b.image %>"><% } %></td>
+    <td><%= b.title %></td>
+    <td><%= b.price %></td>
+    <td><%= b.author_id %></td>
+    <td>
+      <a href="/books/<%= b.book_id %>/edit">Edit</a>
+      <form class="inline" method="POST" action="/books/<%= b.book_id %>/delete"
+            onsubmit="return confirm('Delete this book?')">
+        <button>Delete</button>
+      </form>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+
+<fieldset>
+  <legend>Add a book</legend>
+  <form method="POST" action="/books/add" enctype="multipart/form-data">
+    <input name="title" placeholder="Title" required>
+    <input name="price" type="number" step="0.01" min="0" placeholder="Price" required>
+    <select name="author_id" required>
+      <% authors.forEach(a => { %>
+        <option value="<%= a.author_id %>"><%= a.author_id %> - <%= a.name %></option>
+      <% }) %>
+    </select>
+    <input type="file" name="image" accept="image/*">
+    <button>Add book</button>
+  </form>
+</fieldset>
+</main>
+</body>
+</html>

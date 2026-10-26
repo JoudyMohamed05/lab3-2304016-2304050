@@ -1,0 +1,9 @@
+<% if (typeof user !== 'undefined' && user) { %>
+<div class="topbar">
+  <span class="brand">&#128218; Library</span>
+  <div class="user">
+    <span>Hi, <%= user.name %></span>
+    <form class="inline" method="POST" action="/logout"><button>Log out</button></form>
+  </div>
+</div>
+<% } %>
