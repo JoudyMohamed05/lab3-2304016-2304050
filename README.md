@@ -42,3 +42,7 @@ npm start
 - F2.4 remove a book
 - F2.5 remove an author (its books are deleted too: `ON DELETE CASCADE`)
 - Bonus: upload a cover image for books and a photo for authors
+
+## Team Contribution
+
+Joudy Mohamed Aly (2304050) and Raneem Ahmed Ragab (2304016) worked on all parts of this lab together, including the DDL and DML scripts for both problems, the written answers, and the library website.
